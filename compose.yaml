@@ -1,7 +1,19 @@
 services:
   oracle:
-    image: 'gvenzl/oracle-free:latest'
-    environment:
-      - 'ORACLE_PASSWORD=secret'
+    container_name: oracle-db
+    image: gvenzl/oracle-free:latest
+    restart: always
     ports:
-      - '1521'
+      - "1521:1521"
+      - "5500:5500"
+    environment:
+      - ORACLE_PASSWORD=pass  # Password for SYS, SYSTEM, PDBADMIN users
+      - ORACLE_SID=FREE        # Database SID
+      - ORACLE_PDB=FREEPDB1    # Pluggable Database Name
+      - ORACLE_ALLOW_SYSDBA_WITHOUT_PASSWORD=true
+    volumes:
+      - oracle-data:/opt/oracle/oradata  # Persist Data
+
+volumes:
+  oracle-data:
+    driver: local
