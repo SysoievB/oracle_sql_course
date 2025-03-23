@@ -165,13 +165,13 @@ FROM dual;
 
 -- Insert data into EMPLOYEES
 INSERT ALL
-    INTO EMPLOYEES (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) VALUES (1, 'John', 'Doe', 'jdoe@example.com', TO_DATE('2015-06-01', 'YYYY-MM-DD'), 1, 90000, 3)
-INTO EMPLOYEES (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) VALUES (2, 'Jane', 'Smith', 'jsmith@example.com', TO_DATE('2017-08-15', 'YYYY-MM-DD'), 2, 75000, 1)
-INTO EMPLOYEES (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) VALUES (3, 'Bob', 'Brown', 'bbrown@example.com', TO_DATE('2018-09-23', 'YYYY-MM-DD'), 3, 80000, 2)
-INTO EMPLOYEES (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) VALUES (4, 'Alice%', 'Jones', 'ajones@example.com', TO_DATE('2019-12-10', 'YYYY-MM-DD'), 4, 70000, 4)
-INTO EMPLOYEES (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) VALUES (5, 'Charlie', 'Wilson', 'cwilson@example.com', TO_DATE('2016-05-18', 'YYYY-MM-DD'), 5, 65000, 5)
-INTO EMPLOYEES (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) VALUES (6, 'David', 'Jones', 'djones@example.com', TO_DATE('2019-12-10', 'YYYY-MM-DD'), 2, 50000, 3)
-INTO EMPLOYEES (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) VALUES (7, 'David', 'Jones', 'davjones@example.com', TO_DATE('2019-11-10', 'YYYY-MM-DD'), 4, 80000, 1)
+INTO EMPLOYEES (employee_id, first_name, last_name, phone_number, email, hire_date, job_id, salary, department_id) VALUES (1, 'John', 'Doe', '333.424.5455', 'jdoe@example.com', TO_DATE('2015-06-01', 'YYYY-MM-DD'), 1, 90000, 3)
+INTO EMPLOYEES (employee_id, first_name, last_name, phone_number, email, hire_date, job_id, salary, department_id) VALUES (2, 'Jane', 'Smith', '333.42.54553', 'jsmith@example.com', TO_DATE('2017-08-15', 'YYYY-MM-DD'), 2, 75000, 1)
+INTO EMPLOYEES (employee_id, first_name, last_name, phone_number, email, hire_date, job_id, salary, department_id) VALUES (3, 'Bob', 'Brown', '333.124.5455', 'bbrown@example.com', TO_DATE('2018-09-23', 'YYYY-MM-DD'), 3, 80000, 2)
+INTO EMPLOYEES (employee_id, first_name, last_name, phone_number, email, hire_date, job_id, salary, department_id) VALUES (4, 'Alice%', 'Jones', '333.424.5855', 'ajones@example.com', TO_DATE('2019-12-10', 'YYYY-MM-DD'), 4, 70000, 4)
+INTO EMPLOYEES (employee_id, first_name, last_name, phone_number, email, hire_date, job_id, salary, department_id) VALUES (5, 'Charlie', 'Wilson', '333.424.545', 'cwilson@example.com', TO_DATE('2016-05-18', 'YYYY-MM-DD'), 5, 65000, 5)
+INTO EMPLOYEES (employee_id, first_name, last_name, phone_number, email, hire_date, job_id, salary, department_id) VALUES (6, 'David', 'Jones', '333.24.5455', 'djones@example.com', TO_DATE('2019-12-10', 'YYYY-MM-DD'), 2, 50000, 3)
+INTO EMPLOYEES (employee_id, first_name, last_name, phone_number, email, hire_date, job_id, salary, department_id) VALUES (7, 'David', 'Jones', '33.24.5455', 'davjones@example.com', TO_DATE('2019-11-10', 'YYYY-MM-DD'), 4, 80000, 1)
 SELECT *
 FROM dual;
 
@@ -191,3 +191,4 @@ INTO JOB_HISTORY (employee_id, start_date, end_date, job_id, department_id) VALU
 INTO JOB_HISTORY (employee_id, start_date, end_date, job_id, department_id) VALUES (7, TO_DATE('2015-03-10', 'YYYY-MM-DD'), TO_DATE('2016-05-17', 'YYYY-MM-DD'), 4, 1)
 SELECT *
 FROM dual;
+
