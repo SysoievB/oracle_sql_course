@@ -152,35 +152,104 @@ from EMPLOYEES;
 -- Выведите имя сотрудника, день его трудоустройства, а также
 -- количество месяцев между днём его трудоустройства и датой, которую
 -- необходимо получить из текста «SEP, 18:45:00 18 2009».
+SELECT FIRST_NAME,
+       HIRE_DATE,
+       ROUND(MONTHS_BETWEEN(
+                     HIRE_DATE,
+                     TO_DATE('18-SEP-2009 18:45:00', 'DD-MON-YYYY HH24:MI:SS', 'NLS_DATE_LANGUAGE=ENGLISH')
+             ), 0) AS months_between
+FROM EMPLOYEES;
 
--- Выведите имя сотрудника, его з/п, а также полную з/п (salary +
--- commission_pct(%)) в формате: $24,000.00
+-- Выведите имя сотрудника, его з/п, а также полную salary в формате: $24,000.00
+select FIRST_NAME,
+       SALARY,
+       to_char(SALARY, '$999,999.99') as formatted_salary
+from EMPLOYEES;
 
 -- Выведите имя сотрудника, его фамилию, а также выражение «different
 -- length», если длина имени не равна длине фамилии или выражение
 -- «same length», если длина имени равна длине фамилии. Не
 -- используйте conditional functions.
+SELECT FIRST_NAME,
+       LAST_NAME,
+       DECODE(LENGTH(FIRST_NAME), LENGTH(LAST_NAME), 'same length', 'different length') AS length_name
+FROM EMPLOYEES;
 
--- Выведите имя сотрудника, его комиссионные, а также информацию о
--- наличии бонусов к зарплате – есть ли у него комиссионные (Yes/No).
+-- Выведите имя сотрудника, его salary present - Yes else No
+select FIRST_NAME,
+       SALARY,
+       NVL2(SALARY, 'Yes', 'No')
+from EMPLOYEES;
 
 -- Выведите имя сотрудника и значение которое его будет
--- характеризовать: значение комиссионных, если присутствует, если нет,
--- то id его менеджера, если и оно отсутствует, то его з/п.
+-- характеризовать: значение job_id, если присутствует, если нет,
+-- то department_id, если и оно отсутствует, то его з/п.
+select FIRST_NAME,
+       COALESCE(JOB_ID, DEPARTMENT_ID, SALARY) as characteristics
+from EMPLOYEES;
 
 -- Выведите имя сотрудника, его з/п, а также уровень зарплаты каждого
--- сотрудника: Меньше 5000 считается Low level, Больше или равно 5000
--- и меньше 10000 считается Normal level, Больше или равно 10000
+-- сотрудника: Меньше 70000 считается Low level, Больше или равно 70000
+-- и меньше 80000 считается Normal level, Больше или равно 80000
 -- считается High level.
+select FIRST_NAME,
+       SALARY,
+       DECODE(SALARY,
+              SALARY < 70000, 'Low level',
+              SALARY >= 70000 and SALARY < 80000, 'Normal level',
+              SALARY >= 80000, 'High level'
+       )
+from EMPLOYEES;
 
--- Для каждой страны показать регион, в котором она находится: 1
--- Europe, 2-America, 3-Asia, 4-Africa . Выполнить данное задание, не
+-- Для каждой страны показать регион, в котором она находится: 1-Europe
+-- 2-America, 3-Asia, 4-Africa . Выполнить данное задание, не
 -- используя функционал JOIN. Используйте DECODE.
+SELECT COUNTRY_NAME,
+       DECODE(COUNTRY_ID,
+              'FR', 'Europe',
+              'DE', 'Europe',
+              'IT', 'Europe',
+              'US', 'America',
+              'CA', 'America',
+              'BR', 'America',
+              'CN', 'Asia',
+              'JP', 'Asia',
+              'IN', 'Asia',
+              'ZA', 'Africa',
+              'EG', 'Africa',
+              'NG', 'Africa',
+              'Unknown'  -- Default value if no match is found
+       ) AS REGION
+FROM COUNTRIES;
 
 -- Задачу предыдущую решите используя CASE.
+SELECT COUNTRY_NAME,
+       CASE
+           WHEN COUNTRY_ID = 'FR' THEN 'Europe'
+           WHEN COUNTRY_ID = 'DE' THEN 'Europe'
+           WHEN COUNTRY_ID = 'IT' THEN 'Europe'
+           WHEN COUNTRY_ID = 'US' THEN 'America'
+           WHEN COUNTRY_ID = 'CA' THEN 'America'
+           WHEN COUNTRY_ID = 'BR' THEN 'America'
+           WHEN COUNTRY_ID = 'CN' THEN 'Asia'
+           WHEN COUNTRY_ID = 'JP' THEN 'Asia'
+           WHEN COUNTRY_ID = 'IN' THEN 'Asia'
+           WHEN COUNTRY_ID = 'ZA' THEN 'Africa'
+           WHEN COUNTRY_ID = 'EG' THEN 'Africa'
+           WHEN COUNTRY_ID = 'NG' THEN 'Africa'
+           ELSE 'Unknown'  -- Default value if no match is found
+           END AS REGION
+FROM COUNTRIES;
 
--- Выведите имя сотрудника, его з/п, а также уровень того, насколько у
--- сотрудника хорошие условия :
+-- Выведите имя сотрудника, его з/п, а также уровень того, насколько у сотрудника хорошие условия :
 --  BAD: з/п меньше 10000 и отсутствие комиссионных;
 --  NORMAL: з/п между 10000 и 15000 или, если  присутствуют комиссионные;
 --  GOOD: з/п больше или равна 15000.
+select FIRST_NAME,
+       SALARY,
+       CASE
+           WHEN SALARY < 70000 THEN 'BAD'
+           WHEN SALARY >= 70000 AND SALARY < 80000 THEN 'NORMAL'
+           WHEN SALARY >= 80000 THEN 'GOOD'
+           END AS salary_characteristics
+from EMPLOYEES;
