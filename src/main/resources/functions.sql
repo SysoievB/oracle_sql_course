@@ -73,40 +73,81 @@ select HIRE_DATE, ADD_MONTHS(HIRE_DATE, 6), LAST_DAY(HIRE_DATE) from EMPLOYEES;
 
 -- Используя функции, получите список всех сотрудников у которых в
 -- имени есть буква 'b' (без учета регистра).
+select * from EMPLOYEES where lower(FIRST_NAME) like '%b%';
 
 -- Используя функции, получите список всех сотрудников у которых в
 -- имени содержатся минимум 2 буквы 'a'.
+select * from EMPLOYEES where lower(FIRST_NAME) like '%a%a%';
 
 -- Получите первое слово из имени департамента, для тех
 -- департаментов, у которых название состоит больше, чем из одного слова.
+select DEPARTMENT_NAME,
+       substr(DEPARTMENT_NAME, 1, instr(DEPARTMENT_NAME, ' ')) as FIRST_WORD
+from DEPARTMENTS where instr(DEPARTMENT_NAME, ' ') > 0;
 
 -- Получите имена сотрудников без первой и последней буквы в имени.
+SELECT FIRST_NAME,
+       SUBSTR(FIRST_NAME, 2, LENGTH(FIRST_NAME) - 2) AS trimmed_first_last_letters
+FROM EMPLOYEES;
 
--- Получите список всех сотрудников, у которых в значении job_id после
--- знака '_' как минимум 3 символа, но при этом это значение после '_' не
--- равно 'CLERK'.
+-- Получите список всех сотрудников, у которых в значении job_title после
+-- знака ' ' как минимум 3 символа, но при этом это значение после ' ' не равно 'Engineer'
+SELECT JOB_TITLE FROM JOBS
+WHERE LENGTH(SUBSTR(JOB_TITLE, INSTR(JOB_TITLE, ' ') + 1)) > 3
+AND SUBSTR(JOB_TITLE, INSTR(JOB_TITLE, ' ') + 1) <> 'Engineer';
 
--- Получите список всех сотрудников, которые пришли на работу в
--- первый день любого месяца.
+-- Получите список всех сотрудников, которые пришли на работу в первый день любого месяца.
+SELECT HIRE_DATE FROM EMPLOYEES
+WHERE HIRE_DATE = TRUNC(HIRE_DATE, 'MM');
 
--- Получите список всех сотрудников, которые пришли на работу в
--- 2008ом году.
+-- Получите список всех сотрудников, которые пришли на работу в 2019ом году.
+select HIRE_DATE from EMPLOYEES
+where TO_CHAR(HIRE_DATE, 'YYYY') = '2019';
 
 -- Покажите завтрашнюю дату в формате:
 -- Tomorrow is Second day of January
+SELECT 'Tomorrow is ' || TO_CHAR(SYSDATE + 1, 'fmDay "day of" Month') AS formatted_date FROM dual;
 
 -- Выведите имя сотрудника и дату его прихода на работу в формате:
 -- 21st of June, 2007
+SELECT FIRST_NAME,
+       HIRE_DATE,
+       TO_CHAR(HIRE_DATE, 'DD') ||
+       CASE
+           WHEN TO_CHAR(HIRE_DATE, 'DD') IN ('11', '12', '13') THEN 'th'
+           WHEN TO_CHAR(HIRE_DATE, 'DD') LIKE '%1' THEN 'st'
+           WHEN TO_CHAR(HIRE_DATE, 'DD') LIKE '%2' THEN 'nd'
+           WHEN TO_CHAR(HIRE_DATE, 'DD') LIKE '%3' THEN 'rd'
+           ELSE 'th'
+           END ||
+       ' of ' || TO_CHAR(HIRE_DATE, 'Month') || ', ' || TO_CHAR(HIRE_DATE, 'YYYY')
+           AS formatted_date
+FROM EMPLOYEES;
 
 -- Получите список работников с увеличенными зарплатами на 20%.
 -- Зарплату показать в формате:     $28,800.00
+select SALARY,
+       TO_CHAR(SALARY * 1.2, 'FM$999,999,999.00') as increased_salary
+from EMPLOYEES;
 
 -- Выведите актуальную дату (нынешнюю), + секунда, + минута, + час, +
 -- день, + месяц, + год. (Всё это по отдельности прибавляется к
 -- актуальной дате).
+SELECT SYSDATE AS current_date,
+       SYSDATE + (1/86400) AS added_second,  -- 1 second = 1/86400 of a day
+       SYSDATE + (1/1440) AS added_minute,  -- 1 minute = 1/1440 of a day
+       SYSDATE + (1/24) AS added_hour,      -- 1 hour = 1/24 of a day
+       SYSDATE + 1 AS added_day,            -- 1 day
+       ADD_MONTHS(SYSDATE, 1) AS added_month, -- Adding 1 month
+       ADD_MONTHS(SYSDATE, 12) AS added_year -- Adding 1 year
+FROM dual;
 
 -- Выведите имя сотрудника, его з/п и новую з/п, которая равна старой
 -- плюс это значение текста «$12,345.55».
+select FIRST_NAME,
+       SALARY,
+       SALARY + TO_NUMBER('$12,345.55','$999,999.99') as updated_salary
+from EMPLOYEES;
 
 -- Выведите имя сотрудника, день его трудоустройства, а также
 -- количество месяцев между днём его трудоустройства и датой, которую
