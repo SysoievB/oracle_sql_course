@@ -42,28 +42,59 @@ from EMPLOYEES group by to_char(HIRE_DATE, 'DAY');
 
 -- Выведите id департаментов, в которых работает больше 1
 -- сотрудников и сумма их з/п-т больше 150000
-select DEPARTMENT_ID,
-       sum(SALARY)
+select DEPARTMENT_ID
 from EMPLOYEES group by DEPARTMENT_ID
 having count(DEPARTMENT_ID) > 1 and sum(SALARY) > 150000
 order by DEPARTMENT_ID;
 
 -- Из таблицы countries вывести все region_id, для которых сумма всех
--- букв их стран больше 50ти.
+-- букв их стран больше 10ти.
+SELECT REGION_ID,
+       SUM(LENGTH(COUNTRY_NAME)) AS total_letters
+FROM COUNTRIES
+GROUP BY REGION_ID
+HAVING SUM(LENGTH(COUNTRY_NAME)) > 10
+ORDER BY REGION_ID;
 
 -- Выведите информацию о job_id и округленную среднюю зарплату
 -- работников для каждого job_id.
+SELECT JOB_ID,
+       ROUND(AVG(SALARY)) AS rounded_avg_salary
+FROM EMPLOYEES
+GROUP BY JOB_ID;
 
 -- Получить список id департаментов, в которых работают сотрудники
 -- нескольких (>1) job_id.
+SELECT DEPARTMENT_ID,
+       COUNT(DISTINCT JOB_ID) AS job_count
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID
+HAVING COUNT(DISTINCT JOB_ID) > 1;
 
 -- Выведите информацию о department, job_id, максимальную и
 -- минимальную з/п для всех сочетаний department_id - job_id, где
--- средняя з/п больше 10000.
+-- средняя з/п больше 70000.
+select DEPARTMENT_ID,
+       JOB_ID,
+       max(SALARY),
+       min(SALARY)
+from EMPLOYEES
+group by DEPARTMENT_ID, JOB_ID
+having avg(SALARY) > 70000
+order by DEPARTMENT_ID;
 
--- Получить список manager_id, у которых средняя зарплата всех его
--- подчиненных, не имеющих комиссионные, находится в промежутке от
--- 6000 до 9000.
+-- Получить список JOB_ID, у которых средняя зарплата всех его
+-- подчиненных, находится в промежутке от 70000 до 90000.
+select JOB_ID,
+       round(avg(SALARY), 2)
+from EMPLOYEES
+group by JOB_ID
+having avg(SALARY) between 70000 and 90000;
 
--- Выведите округлённую до тысяч (не тысячных) максимальную зарплату
+-- Выведите округлённую до 10 тысяч (не тысячных) максимальную зарплату
 -- среди всех средних зарплат по департаментам.
+select ROUND(max(SALARY), -4),
+       DEPARTMENT_ID
+from EMPLOYEES
+group by DEPARTMENT_ID
+order by DEPARTMENT_ID desc;
