@@ -51,26 +51,59 @@ FROM DEPARTMENTS d
 GROUP BY d.DEPARTMENT_NAME
 HAVING COUNT(e.EMPLOYEE_ID) = 0;
 
--- Выведите всю информацию о сотрудниках, менеджеры которых
--- устроились на работу в 2005ом году, но при это сами работники
--- устроились на работу до 2005 года.
-
 -- Выведите название страны и название региона этой страны, используя natural join.
+select COUNTRY_NAME,
+       REGION_NAME
+from COUNTRIES
+         natural join REGIONS;
 
 -- Выведите имена, фамилии и з/п сотрудников, которые получают
--- меньше, чем (минимальная з/п по их специальности + 1000).
+-- меньше, чем (минимальная з/п по их специальности + 10000).
+select e.FIRST_NAME,
+       e.LAST_NAME,
+       e.SALARY,
+       j.MIN_SALARY
+from EMPLOYEES e
+         left join JOBS j on e.JOB_ID = j.JOB_ID
+where j.MIN_SALARY + 10000 > e.SALARY;
 
 -- Выведите уникальные имена и фамилии сотрудников, названия стран,
 -- в которых они работают. Также выведите информацию о сотрудниках,
 -- о странах которых нет информации. А также выведите все страны, в
 -- которых нет сотрудников компании.
+SELECT DISTINCT e.FIRST_NAME,
+                e.LAST_NAME,
+                c.COUNTRY_NAME
+FROM EMPLOYEES e
+         FULL OUTER JOIN DEPARTMENTS d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+         FULL OUTER JOIN LOCATIONS l ON d.LOCATION_ID = l.LOCATION_ID
+         FULL OUTER JOIN COUNTRIES c ON l.COUNTRY_ID = c.COUNTRY_ID;
 
 -- Выведите имена и фамилии всех сотрудников, а также названия стран,
 -- которые мы получаем при объединении работников со всеми
 -- странами без какой-либо логики.
+select FIRST_NAME,
+       LAST_NAME,
+       COUNTRY_NAME
+from EMPLOYEES
+         cross join COUNTRIES;
 
 -- Решите задачу (Выведите информацию о регионах и количестве сотрудников в каждом регионе.)
 -- используя Oracle Join синтаксис.
+select r.REGION_NAME,
+       count(e.EMPLOYEE_ID)
+from REGIONS r, EMPLOYEES e, DEPARTMENTS d, LOCATIONS l, COUNTRIES c
+where r.REGION_ID = c.REGION_ID
+  and c.COUNTRY_ID = l.COUNTRY_ID
+  and l.LOCATION_ID = d.LOCATION_ID
+  and d.DEPARTMENT_ID = e.DEPARTMENT_ID
+group by r.REGION_NAME;
 
 -- Решите задачу (Выведите названия всех департаментов, в которых нет ни одного сотрудника. ),
 -- используя Oracle Join синтаксис.
+select DEPARTMENT_NAME,
+       count(EMPLOYEE_ID)
+from DEPARTMENTS d, EMPLOYEES e
+where d.DEPARTMENT_ID = e.DEPARTMENT_ID (+)
+group by DEPARTMENT_NAME
+having count(EMPLOYEE_ID) = 0;
