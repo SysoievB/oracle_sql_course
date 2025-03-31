@@ -1,4 +1,15 @@
 -- Выведите всю информацию о сотрудниках, с самым длинным именем.
+select FIRST_NAME,
+       LAST_NAME,
+       max(length(FIRST_NAME)) as max_lenght_name
+from EMPLOYEES
+group by FIRST_NAME, LAST_NAME
+having LENGTH(FIRST_NAME) = max(length(FIRST_NAME));-- returns all names lengths
+
+select FIRST_NAME,
+       LAST_NAME
+from EMPLOYEES
+where LENGTH(FIRST_NAME) = (SELECT MAX(LENGTH(FIRST_NAME)) FROM EMPLOYEES);-- returns just one exact name
 
 -- Выведите всю информацию  о сотрудниках, с зарплатой большей
 -- средней зарплаты всех сотрудников.
